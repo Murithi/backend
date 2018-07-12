@@ -1,0 +1,4 @@
+endpoint: https://eu1.prisma.sh/eric-murithi-19fbd7/kewaservice/kewaservicedev
+# endpoint: http://localhost:4466
+datamodel: datamodel.graphql
+

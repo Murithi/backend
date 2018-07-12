@@ -1,0 +1,367 @@
+type VehicleOwner {
+  id: ID! @unique
+  name: String! @unique
+  phone: String!
+  email: String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  vehicles:[Vehicle!]! @relation(name: "OwnerofVehicle")
+}
+
+type Vehicle{
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  registrationNumber: String! @unique
+  logBookNumber: String! @unique
+  model: String!
+  fuelType: String!
+  insuranceValuation: Int
+  insuranceRenewalDate: DateTime
+  manufactureDate:DateTime
+  owner:VehicleOwner! @relation(name: "OwnerofVehicle")
+  assigned:Boolean! @default(value: "false")
+  assignee:Personnel
+  dateAssigned:DateTime
+  repairs:[RepairsRequisition!]!
+  service:[RequestService!]!
+  inspection:[VehicleInspection!]!
+
+}
+
+type Driver{
+  id:ID! @unique
+  personnelDetails:Personnel 
+  licenseNumber: String! @unique
+  licenseExpiry:DateTime!
+    createdAt: DateTime!
+  updatedAt: DateTime!
+
+}
+type VehicleRequisition{
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  vehicleType: String!
+  estimatedNoOfHours:  Int!
+  project: String!
+  section: String!
+  estimatedCost: Int
+  requestStatus: Boolean! @default(value: "false")
+  requestApprovedBy: User @relation(name: "ApprovedVehicleRequests")
+  requestedBy: User @relation(name: "InitiatedVehicleRequests")
+}
+
+
+enum ROLE {
+  USER
+  ACCOUNTANT
+  SUPERUSER
+  DIRECTOR
+  ADMIN
+}
+
+type User {
+  id: ID! @unique
+  email: String! @unique
+  password: String!
+  name: String!
+  personnelDetails:Personnel 
+  approvedVehicleRequests: [VehicleRequisition!]! @relation(name: "ApprovedVehicleRequests")
+  initiatedVehicleRequests:[VehicleRequisition!]! @relation(name: "InitiatedVehicleRequests")
+  approvedServiceRequests: [RequestService!]! @relation(name: "ApprovedRequestsForService")
+  initiatedServiceRequests:[RequestService!]! @relation(name: "InitiatedRequestsForService")
+  approvedRepairsRequests: [RepairsRequisition!]! @relation(name: "ApprovedRepairsRequests")
+  initiatedRepairsRequests:[RepairsRequisition!]! @relation(name: "InitiatedRepairsRequests")
+  initiatedMaterialRequests:[MaterialRequisition!]! @relation(name: "InitiatedMaterialRequests")
+  initiatedInspectionRequests:[VehicleInspection!]! @relation(name: "InitiatedInspectionRequests")
+  approvedInspectionRequests:[VehicleInspection!]! @relation(name: "ApprovedInspectionRequests")
+  role: ROLE @default(value: USER)
+  locked: Boolean @default(value: "true")
+  authorized: Boolean @default(value: "true")
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type Post {
+  id: ID! @unique
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  isPublished: Boolean! @default(value: "false")
+  title: String!
+  text: String!
+  author: User!
+}
+
+type Personnel{
+  id:ID! @unique
+  firstName: String!
+  lastName: String!
+  idNumber: String! @unique
+  nssfId: String! @unique
+  nhifId: String! @unique
+  phoneNumber: String!
+  gender: Boolean! @default(value: "true")
+  addressNo: String!
+  location: String!
+  photoUrl: String!
+  highestEducationLevel: String!
+  certificatesUrl: String!
+  curriculumVitaeUrl: String!
+  designation:Role! 
+  dateOfEmployment: DateTime!
+  dateOfTermination: DateTime
+  currentSalary: String!
+  terminationStatus: Boolean! @default(value:"false") 
+  reasonsForTermination:String
+  projectAssignedTo: Project
+  assignedToProject:Boolean! @default(value:"false") 
+  sectionsAssigned: [SectionAssignment!]! @relation(name: "PersonnelAssignedSections")
+  assignedAccount:User @default(value: "null")
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+  
+
+
+type Role{
+  id:ID!@unique
+  roleName: String!
+  minimumSalary: String!
+  maximumSalary: String!
+  personnels:[Personnel!]! 
+  createdAt: DateTime!
+  description: String 
+  updatedAt: DateTime!
+}
+
+type Project{
+  id:ID!@unique
+  projectName:String!
+  projectDescription:String!
+  projectValuation:Int
+  projectStartDate:DateTime
+  projectCompletionDate:DateTime
+  projectLocation:String!
+  sections:[Section!]!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  materials:StoreTransaction
+
+}
+
+type Section{
+  id:ID!@unique
+  sectionName:String!
+  sectionDescription:String!
+  sectionProject:Project!
+  sectionStartDate:DateTime
+  sectionEndDate:DateTime
+  sectionLocation:String!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type VehicleAssignment{
+  id:ID!@unique
+  motorVehicle:Vehicle!
+  assignee:Personnel!
+  dateOfAssignment:DateTime!
+  dateRelieved:DateTime
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+type SectionAssignment{
+  id:ID! @unique
+  projectAssignedTo:Project!
+  personAssignedTo:Personnel! @relation(name: "PersonnelAssignedSectionss")
+  sectionAssignedTo:Section!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+}
+
+
+
+type ServiceRequisition{
+  id:ID! @unique
+  vehicleToBeServiced:Vehicle!
+  approxCost:Int
+  otherDetails:String
+  createdAt:DateTime!
+  updatedAt: DateTime!
+
+}
+
+
+
+type PersonnelAttendance{
+  id:ID! @unique
+  employee:Personnel!
+  inAttendance:Boolean!
+  dateOfAttendance: DateTime!
+  reportingTime:DateTime!
+  exitTime:DateTime!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+
+}
+
+
+
+type RequestService{
+  id: ID! @unique
+  requestedBy: User @relation(name: "InitiatedRequestsForService")
+  vehicleToBeServiced:Vehicle
+  approxCostOFService: Int
+  otherDetails:String
+  requestApprovedBy: User @relation(name: "ApprovedRequestsForService")
+  approvalStatus:Boolean @default(value:"false") 
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  issuedCash: Boolean @default(value:"false")  
+  approvalDate: DateTime
+   paymentsDetails: PaymentIssue
+  cashIssued: Boolean @default(value:"false")
+  transactionCompleted: Boolean @default(value:"false")
+}
+
+type RepairsRequisition{
+  id:ID! @unique
+  requestedBy: User @relation(name: "InitiatedRepairsRequests")
+  vehicleToBeRepaired:Vehicle!
+  approxCostOfRepair:Int
+  otherDetails:String
+  requestApprovedBy: User @relation(name: "ApprovedRepairsRequests")
+  approvalStatus:Boolean! @default(value:"false") 
+  approvalDate:DateTime
+  issuedCash:Boolean @default(value:"false")
+  paymentsDetails: PaymentIssue
+  createdAt:DateTime!
+  dateServiced:DateTime
+  updatedAt: DateTime!
+}
+
+type VehicleInspection{
+  id:ID! @unique
+  requestedBy: User @relation(name: "InitiatedInspectionRequests")
+  vehicleToBeInspected: Vehicle!
+  approxCostOfInspection:Int
+  requestApprovedBy:User @relation(name: "ApprovedInspectionRequests")
+  approvalDate:DateTime
+  approvalStatus:Boolean @default(value:"false")
+  otherDetails:String
+  issuedCash:Boolean @default(value:"false")
+  paymentsDetails: PaymentIssue
+  createdAt:DateTime!
+  dateInspected:DateTime
+  updatedAt:DateTime!
+}
+
+type MaterialRequisition {
+  id:ID! @unique
+  materialType: MaterialsCosting!
+  quantity: Int!
+  proposedSupplier:Supplier!
+  otherDetails:String
+  approxCost:Int!
+  paymentMode:String!
+  requestedBy: User @relation(name: "InitiatedMaterialRequests")
+  requestApprovedBy: User @relation(name: "ApprovedMaterialRequests")
+  approvalStatus:Boolean! @default(value:"false") 
+  approvalDate:DateTime
+  cashPaymentsDetails: PaymentIssue
+  otherPaymentDetails: OtherPaymentIssue
+  createdAt:DateTime!
+  updatedAt: DateTime!
+}
+type OtherPaymentIssue{
+  id:ID! @unique
+  amountPaid:Int!
+  invoiceNumber:String!
+  discountRecieved:Int!
+  requestedMaterialsPayment: MaterialRequisition
+  datePaid: DateTime!
+  otherDetails:String
+  issuedBy:User!  
+  createdAt:DateTime!
+  updatedAt:DateTime!
+
+}
+type PaymentIssue {
+
+  id:ID! @unique
+  amountIssued: Int
+  amountCharged: Int
+  recieptNumber: String
+  cashReported: Boolean @default(value:"false")
+  amountReturned: Int
+  requestedServicePayment: RequestService
+  repairsRequisitionPayment: RepairsRequisition
+  requestedMaterialsPayment: MaterialRequisition
+  requestedInspectionPayment: VehicleInspection
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  dateIssued: DateTime
+  dateReported: DateTime
+  otherDetails: String
+  issuedBy: User!
+}
+
+
+
+type Supplier{
+  id:ID! @unique
+  supplierName:String!
+  supplierPhone:String!
+  material:MaterialsCosting
+  negotiatedRate:Int
+  otherDetails:String
+  createdAt: DateTime!
+  updatedAt: DateTime!  
+  createdBy: User!
+  supplies:[StoreTransaction!]!
+
+}
+
+
+
+
+type MaterialsCosting{
+  id:ID! @unique
+  materialName: String!
+  materialDescription: String
+  units: Int
+  costPerUnit: Int
+  standardUnit: String
+  balance: StoreBalance
+  createdAt: DateTime!
+  updatedAt: DateTime!  
+  createdBy: User!
+  transactions:[StoreTransaction!]!
+}
+
+
+type StoreBalance{
+  id: ID! @unique
+  item:MaterialsCosting
+  balance:  Int!
+}
+
+type StoreTransaction{
+  id:ID! @unique
+  itemTransacted:MaterialsCosting
+  balanceBefore:Int!
+  balanceAfter:Int!
+  unitsTransacted:Int
+  transactionType:String!
+  transactionDate:DateTime!
+  materialsIssuedTo:Project
+  materialsRecievedFrom:Supplier
+  deliveryNote:String
+  createdAt:DateTime!  
+  updatedAt:DateTime!
+  transactedBy:User!
+
+}
+

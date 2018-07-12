@@ -1,0 +1,335 @@
+
+#import Vehicle, VehicleOwner, VehicleInspection, Personnel, Role, User, Project, Section,  Driver, VehicleAssignment, SectionAssignment, PersonnelAttendance, VehicleRequisition, PaymentIssue, RepairsRequisition, RequestService, MaterialRequisition, MaterialsCosting, Supplier, OtherPaymentIssue, StoreBalance, StoreTransaction from './generated/prisma.graphql'
+
+
+type Query{
+
+    vehicleFeed(filter: String, first:Int, skip:Int):[Vehicle!]!
+    vehicleDisplayFeed:[Vehicle!]!
+    vehiclesAssignedFeed:[Vehicle!]!
+    vehicleRequisitionFeed(filter: String, first:Int, skip:Int):[VehicleRequisition!]!
+    vehicle(id:ID!):Vehicle!
+    vehicleOwnerFeed(filter: String, first:Int, skip:Int):[VehicleOwner!]!
+    vehicleOwner(id:ID):VehicleOwner
+    personnelFeed(filter: String, first:Int, skip:Int):[Personnel!]!
+    personnel(id:ID!):Personnel!
+    personnelProjectAssignedFeed:[Personnel!]!
+    personnelRoleFeed(filter: String, first:Int, skip:Int):[Role!]!
+    personnelRoleFeedByDesignation(filter: String, first:Int, skip:Int):[Role!]!
+    personnelRole(id:ID!):Role
+    userFeed(filter: String, first:Int, skip:Int):[User!]!
+    user(id:ID!):User
+    projectFeed(filter: String, first:Int, skip:Int):[Project!]!
+    project(id:ID!):Project
+    sectionFeed(filter: String, first:Int, skip:Int):[Section]!
+    section(id:ID!):Section
+    sectionAssignmentFeed(filter: String, first:Int, skip:Int):[SectionAssignment!]!
+    sectionAssignment(id:ID!):SectionAssignment
+    driverFeed(filter: String, first:Int, skip:Int):[Driver!]!
+    driver(id:ID!):Driver
+    vehicleAssignmentFeed(filter: String, first:Int, skip:Int):[VehicleAssignment!]!
+    vehicleAssignment(id:ID!):VehicleAssignment!
+    personnelAttendanceFeed(filter: String, first:Int, skip:Int):[PersonnelAttendance!]!
+    personnelAttendance(id:ID!):PersonnelAttendance
+    paymentsFeedIssuedPayment(filter: String, first:Int, skip:Int):[PaymentIssue!]!
+    paymentIssueFeed(filter: String, first:Int, skip:Int):[PaymentIssue!]!
+    paymentIssue(id:ID!):PaymentIssue
+    repairsRequestFeed(filter: String, first:Int, skip:Int):[RepairsRequisition!]!
+    initiatedRepairsRequisitionsFeed(filter: String, first:Int, skip:Int):[RepairsRequisition!]!
+    approvedRepairsRequisitionsFeed(filter: String, first:Int, skip:Int):[RepairsRequisition!]!
+    initiatedRepairsRequisition(id:ID!):RepairsRequisition!
+    requestServiceFeed(filter: String, first:Int, skip:Int):[RequestService!]!
+    InitiatedRequisitionsFeed(filter: String, first:Int, skip:Int):[RequestService!]!
+    approvedRequisitionsFeed(filter: String, first:Int, skip:Int):[RequestService!]!
+    initiatedRequisition(id:ID!):RequestService
+    materialRequisitionFeed(filter: String, first:Int, skip:Int):[MaterialRequisition!]!
+    initiatedMaterialRequisitionsFeed(filter: String, first:Int, skip:Int):[MaterialRequisition!]!
+    approvedMaterialRequisitionsFeed(filter: String, first:Int, skip:Int):[MaterialRequisition!]!
+    getMaterialRequisition(id:ID!):MaterialRequisition
+    materialsCostingFeed(filter: String, first:Int, skip:Int):[MaterialsCosting!]!
+    materialsCosting(id:ID!):MaterialsCosting
+    suppliersFeed(filter: String, first:Int, skip:Int):[Supplier!]!
+    getSupplier(id:ID!):Supplier
+    otherPaymentsIssuedFeed(filter: String, first:Int, skip:Int):[OtherPaymentIssue!]!
+    otherPaymentsFeedIssued(id:ID):OtherPaymentIssue
+    storeBalanceFeed(filter: String, first:Int, skip:Int):[StoreBalance!]!
+    storeBalance(id:ID!):StoreBalance
+    storeTransactionFeed(filter: String, first:Int, skip:Int):[StoreTransaction!]!
+    storeTransaction(id:ID!):StoreTransaction!
+
+    vehicleInspectionFeed(filter: String, first:Int, skip:Int):[VehicleInspection!]!
+    initiatedVehicleInspectionsFeed(filter: String, first:Int, skip:Int):[VehicleInspection!]!
+    approvedVehicleInspectionsFeed(filter: String, first:Int, skip:Int):[VehicleInspection!]!
+    initiatedVehicleInspection(id:ID!):VehicleInspection
+    me: User
+    }
+
+type Mutation {
+    
+    login(
+        email:String! password:String!
+        ): AuthPayload!
+
+    signup(
+        name: String!,  password:String!, 
+        idNumber:String!, email:String!
+        ): AuthPayload!
+    
+    addPersonnel(
+        firstName: String! lastName: String! idNumber: String! nssfId: String! 
+        nhifId: String! phoneNumber: String! gender: Boolean! addressNo: String!
+        location: String! photoUrl: String! highestEducationLevel: String!
+        certificatesUrl: String! curriculumVitaeUrl: String! roleId:String! 
+        dateOfEmployment: DateTime! currentSalary: String!
+        ):Personnel!
+
+    editPersonnel(        
+        firstName: String! lastName: String! idNumber: String! nssfId: String! 
+        nhifId: String! phoneNumber: String! gender: Boolean! addressNo: String!
+        location: String! photoUrl: String! highestEducationLevel: String!
+        certificatesUrl: String! curriculumVitaeUrl: String! roleId:String! 
+        dateOfEmployment: DateTime! currentSalary: String! id:ID! 
+        ):Personnel!
+
+    terminatePersonnel(
+        id:ID! reasonsForTermination:String! dateOfTermination: DateTime!
+        ):Personnel!
+
+    assignToProject(
+        id:ID! projectAssignedId:ID!        
+        ):Personnel!
+
+    removePersonnel(id:ID!):Personnel!
+
+    addRole(
+        roleName:String!, minimumSalary:String!, maximumSalary:String!
+    ):Role!
+
+    editRole(
+        id:ID! roleName:String!, minimumSalary:String!, maximumSalary:String!
+    ):Role!
+
+    describeRole(
+        id:ID! description:String!
+    ):Role!
+
+    removeRole(id:ID!):Role!
+
+    updateUserRole(
+        id:ID! role:String!
+    ):User!
+
+    changeUser(id:ID!):User!
+    enableUser(id:ID!):User!
+    deleteUser(id:ID!):User!
+
+    addVehicleOwner(
+        name: String! phone: String! email: String!
+    ):VehicleOwner
+
+    editVehicleOwner(
+        id:ID! name: String! phone: String! email: String!
+       ):VehicleOwner!
+
+    removeVehicleOwner(id:ID!):VehicleOwner!
+    
+
+    addVehicle(
+        registrationNumber: String! logBookNumber: String! 
+        model: String! fuelType: String! insuranceValuation: Int
+        insuranceRenewalDate: DateTime manufactureDate:DateTime
+        ownerId:ID! ): Vehicle!
+
+    editVehicle( 
+        id:ID! registrationNumber: String! logBookNumber: String! 
+        model: String! fuelType: String! insuranceValuation: Int
+        insuranceRenewalDate: DateTime manufactureDate:DateTime
+        ownerId:ID! ): Vehicle!
+
+    editVehicleAssignee(
+        id:ID! assigneeId:ID! assigned:Boolean, dateAssigned:DateTime
+        ):Vehicle!
+
+    removeVehicle(id:ID!):Vehicle!   
+
+    addDriver(
+       personnelId:ID! licenseNumber: String! licenseExpiry:DateTime! 
+    ):Driver!
+
+    editDriver(
+        id:ID! personnelId:ID! 
+        licenseNumber: String! licenseExpiry:DateTime! 
+    ):Driver!
+
+    removeDriver(id:ID!):Driver!
+
+     addProject(
+        projectName:String! projectDescription:String! projectValuation:Int!
+        projectStartDate:DateTime! projectCompletionDate:DateTime!
+        projectLocation:String! 
+    ):Project!
+    editProject(
+        id:ID! projectName:String! projectDescription:String!
+        projectValuation:Int! projectStartDate:DateTime! projectCompletionDate:DateTime!
+        projectLocation:String! 
+    ):Project!
+
+    removeProject(id:ID!):Project!
+
+    addSection(
+        sectionName:String! sectionDescription:String!  sectionProjectId:ID!
+        sectionStartDate:DateTime sectionEndDate:DateTime sectionLocation:String!
+    ):Section!
+
+    editSection(
+        id:ID! sectionName:String! sectionDescription:String!  sectionProjectId:ID!
+        sectionStartDate:DateTime sectionEndDate:DateTime sectionLocation:String!
+    ):Section!
+
+    removeSection(id:ID!):Section
+
+    addVehicleAssignment(
+        motorVehicle:ID! assignee:ID! dateOfAssignment:DateTime!
+    ):VehicleAssignment
+
+    editVehicleAssignment(
+        id:ID! motorVehicle:ID! assignee:ID! dateOfAssignment:DateTime!
+    ):VehicleAssignment
+
+    removeVehicleAssignment(id:ID!):VehicleAssignment
+
+    addSectionAssignment(
+        projectID:ID! personnelID:ID! sectionID:ID!
+    ):SectionAssignment!
+
+    removeSectionAssignment(id:ID!):SectionAssignment!
+
+    addPersonnelAttendance(
+        personnelId:ID!  inAttendance:Boolean! dateOfAttendance: DateTime!
+         reportingTime:DateTime!  exitTime:DateTime!   
+    ):PersonnelAttendance!
+
+    addVehicleRequisition(
+        vehicleType: String! estimatedNoOfHours:  Int!
+        project: String! section: String!
+        estimatedCost: Int requestStatus: Boolean!
+    ):VehicleRequisition!
+
+    addRequestService(
+        otherDetails:String!  vehicleToBeServicedId:ID!  approxCostOFService: Int!
+    ):RequestService!
+
+    approveServiceRequisitionById(
+        id:ID!   approvalDate:DateTime!
+    ):RequestService!
+
+    addServicePaymentIssue(
+        amountIssued:Int! requestId:ID!  dateIssued:DateTime!
+    ):PaymentIssue!
+
+    reportPayments(
+        id:ID! amountReturned: Int amountCharged: Int
+        recieptNumber: String dateReported: DateTime
+    ):PaymentIssue!
+
+    addRepairsPaymentIssue(
+         amountIssued:Int! requestId:ID! dateIssued:DateTime!       
+    ):PaymentIssue!
+
+    addMaterialsPaymentIssue(
+        amountIssued:Int! requestId:ID! dateIssued:DateTime!       
+    ):PaymentIssue!
+
+    addInspectionPaymentIssue(
+        amountIssued:Int! requestId:ID! dateIssued:DateTime!       
+    ):PaymentIssue!
+    addRepairsRequisition(
+        otherDetails:String! vehicleToBeRepaired:ID! approxCostOfRepair: Int!
+    ):RepairsRequisition!
+
+    approveRepairsRequistion(
+         id:ID!  approvalDate:DateTime!       
+    ):RepairsRequisition!
+
+    deleteRepairsRequest(id:ID!):RepairsRequisition
+
+    addMaterialRequisition(
+        materialTypeId:ID! quantity:Int! supplierId:ID!
+        otherDetails:String approxCost:Int! paymentMode:String!     
+    ):MaterialRequisition!
+
+    approveMaterialRequisition(
+        id:ID! approvalDate:DateTime!
+    ):MaterialRequisition!
+
+    deleteMaterialRequisition(id:ID!):MaterialRequisition!
+
+    addMaterials(
+        materialName: String! materialDescription: String units: Int
+        costPerUnit: Int standardUnit: String
+    ):MaterialsCosting!
+
+    editMaterials(
+        id:ID! materialName: String! materialDescription: String
+        units: Int costPerUnit: Int standardUnit: String
+    ):MaterialsCosting!
+
+    removeMaterials(id:ID!):MaterialsCosting!
+
+    createSupplier(
+        supplierName:String! supplierPhone:String! materialsId:ID! negotiatedRate:Int!       
+    ):Supplier!
+
+    editSupplier(
+        id:ID! supplierName:String! supplierPhone:String!
+        materialsId:ID! negotiatedRate:Int!       
+    ):Supplier!
+
+    addChequePaymentDetails(
+        amountPaid:Int! invoiceNumber:String! discountRecieved:Int!  
+        otherDetails:String! materialPaymentsId:ID!
+    ):OtherPaymentIssue
+
+    addStoreBalance(
+        materialsId:ID! balance: Int!
+    ):StoreBalance
+
+    editStoreBalance(
+        id:ID! balance:Int! materialsId:ID!
+    ):StoreBalance!
+    
+    removeBalanceEntry(id:ID!):StoreBalance!
+
+    materialReciept(
+        itemId:ID!, balBefore:Int!, unitsRecieved:Int!, StoreBalId:ID!, deliveryNote:String,
+         dateOfTran:DateTime!, materialsRecievedFrom:String!
+    ):StoreTransaction!
+
+    materialIssue(
+        itemId:ID!, balBefore:Int!, unitsIssued:Int!, StoreBalId:ID!,
+         dateOfTran:DateTime!, materialsIssuedTo:String!
+    ):StoreTransaction!
+
+    removeTransaction(id:ID!):StoreTransaction!
+
+
+    addVehicleInspection(
+        otherDetails:String! vehicleId:ID! approxCostOfInspection: Int!
+    ):VehicleInspection!
+
+    approveVehicleInspection(
+         id:ID!  approvalDate:DateTime!       
+    ):VehicleInspection!
+
+    deleteVehicleInspection(id:ID!):VehicleInspection
+
+
+    
+
+}
+
+
+type AuthPayload {
+  token: String!
+  user: User!
+}
